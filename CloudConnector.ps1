@@ -4,11 +4,12 @@ Function Check-ServiceStatus {
         [String]$ServiceName
     )
     $Service = Get-Service -Name $ServiceName
+    $LeftSpaced = '{0, -50}' -f $Service.DisplayName + " - "
 
     if ($Service -ne $null -and $Service.Status -eq 'Running') {
-        Write-Host "$Service.DisplayName - $Service.Status" -ForegroundColor Green
+        Write-Host $LeftSpaced $Service.Status -ForegroundColor Green
     } else {
-        Write-Host "$Service.DisplayName - $Service.Status" -ForegroundColor Red
+        Write-Host $LeftSpaced $Service.Status -ForegroundColor Red
     }
 }
 
