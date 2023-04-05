@@ -113,7 +113,5 @@ Check-ServiceStatus("XaXdCloudProxy")
 
 
 Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "Citrix*" } | ForEach-Object {
-    Write-Host $_.DisplayName
-    Write-Host $_.DisplayVersion
-    Write-Host $_.InstallSource
+    Write-Host $_.DisplayName + " " $_.DisplayVersion
 }
