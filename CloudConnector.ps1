@@ -1,3 +1,4 @@
+# Checks the status of services on Citrix Cloud connectors and provides basic info if they failed
 Function Check-ServiceStatus {
     param (
         [Parameter(Mandatory=$true)]
@@ -11,7 +12,6 @@ Function Check-ServiceStatus {
     } else {
         Write-Host $LeftSpaced $Service.Status -ForegroundColor Red
 
-        #!TODO - add description, file location 
         switch ($ServiceName) {
             "cdfCaptureService" { 
                 Write-Host "File Location: C:\Program Files\Citrix\CdfCaptureService\CdfCaptureService.exe"
