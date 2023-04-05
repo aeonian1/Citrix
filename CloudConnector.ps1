@@ -10,6 +10,29 @@ Function Check-ServiceStatus {
         Write-Host $LeftSpaced $Service.Status -ForegroundColor Green
     } else {
         Write-Host $LeftSpaced $Service.Status -ForegroundColor Red
+
+        #!TODO - add description, file location 
+        switch ($ServiceName) {
+            "cdfCaptureService" {  }
+            "Citrix Cloud Connector Metrics Service" { }
+            "Citrix NetScaler Cloud Gateway" { }
+            "CitrixClxMtpService" { }
+            "CitrixConfigSyncService" { } 
+            "CitrixHighAvailabilityService" { }
+            "CitrixITSMAdapterProvider" { }
+            "CitrixWEMAuthSvc" { }
+            "CitrixWemMsgSvc" { }
+            "CitrixWorkspaceCloudADProvider" { }
+            "CitrixWorkspaceCloudAgentDiscovery" { }
+            "CitrixWorkspaceCloudAgentLogger" { }
+            "CitrixWorkspaceCloudAgentSystem" { }
+            "CitrixWorkspaceCloudAgentWatchdog" { }
+            "CitrixWorkspaceCloudCredentialProvider" { }
+            "CitrixWorkspaceCloudWebRelayProvider" { }
+            "RemoteHCLServer" { }
+            "XaXdCloudProxy" { }
+            Default {}
+        }
     }
 }
 
