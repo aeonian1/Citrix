@@ -102,7 +102,7 @@ function RegistryOutput {
     } else {
         Write-Host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
 
-        $global:errorlist += write-host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
+        $global:errorlist += $LeftSpaced + (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " + $ExpectedValue
         $global:counter++
     }
 }
@@ -130,7 +130,7 @@ function configReplicationStatus {
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastStartTime" -ExpectedValue (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastStartTime") -Title "Last Start Time Config Replication"
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastEndTime" -ExpectedValue (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastEndTime") -Title "Last End Time Config Replication"
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastUpdateStatus" -ExpectedValue "Complete" -Title "Last End Time Config Replication"
-    RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastErrorMessage" -ExpectedValue "" -Title "Last Error Message"
+    RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastErrorMessage" -ExpectedValue " " -Title "Last Error Message"
 }
 
 
@@ -154,7 +154,7 @@ function pingCheck {
 function getEvents {
     $yesterday = (Get-Date) - (New-TimeSpan -Days 1)
     Write-Host "`n--- Citrix Application Events - FATAL / ERROR / WARNING ---" -ForegroundColor Yellow
-    Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday} | Format-List
+    try {Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday} | Format-List } catch { Write-Host "No Events Found"}
 }
 
 # Entry point into this script

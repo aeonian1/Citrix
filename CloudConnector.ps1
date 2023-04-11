@@ -147,7 +147,7 @@ function RegistryOutput {
     } else {
         Write-Host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
 
-        $global:errorlist += write-host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
+        $global:errorlist += $LeftSpaced + (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " + $ExpectedValue
         $global:counter++
     }
 }
@@ -215,7 +215,8 @@ function pingCheck {
 function getEvents {
     $yesterday = (Get-Date) - (New-TimeSpan -Days 1)
     Write-Host "`n--- Citrix Application Events - FATAL / ERROR / WARNING ---" -ForegroundColor Yellow
-    Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday} | Format-List
+    try { Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday} | Format-List } catch { Write-Host "No Events Found" }
+    
 }
 
 # Entry point into this script
