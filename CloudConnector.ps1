@@ -1,3 +1,8 @@
+
+$counter = 0
+$errorlist
+
+
 # Checks the status of services on Citrix Cloud connectors and provides basic info if they failed
 Function Check-ServiceStatus {
     param (
@@ -11,6 +16,11 @@ Function Check-ServiceStatus {
         Write-Host $LeftSpaced $Service.Status -ForegroundColor Green
     } else {
         Write-Host $LeftSpaced $Service.Status -ForegroundColor Red
+
+        # Append service name to errorlist
+        $errorlist[$counter] = $ServiceName
+        $counter++
+
 
         switch ($ServiceName) {
             "cdfCaptureService" { 
@@ -183,26 +193,7 @@ Function Check-ServiceStatus {
     }
 }
 
-Check-ServiceStatus("cdfCaptureService")
-Check-ServiceStatus("Citrix Cloud Connector Metrics Service")
-Check-ServiceStatus("Citrix NetScaler Cloud Gateway")
-Check-ServiceStatus("CitrixClxMtpService")
-Check-ServiceStatus("CitrixConfigSyncService")
-Check-ServiceStatus("CitrixHighAvailabilityService")
-Check-ServiceStatus("CitrixITSMAdapterProvider")
-Check-ServiceStatus("CitrixWEMAuthSvc")
-Check-ServiceStatus("CitrixWemMsgSvc")
-Check-ServiceStatus("CitrixWorkspaceCloudADProvider")
-Check-ServiceStatus("CitrixWorkspaceCloudAgentDiscovery")
-Check-ServiceStatus("CitrixWorkspaceCloudAgentLogger")
-Check-ServiceStatus("CitrixWorkspaceCloudAgentSystem")
-Check-ServiceStatus("CitrixWorkspaceCloudAgentWatchdog")
-Check-ServiceStatus("CitrixWorkspaceCloudCredentialProvider")
-Check-ServiceStatus("CitrixWorkspaceCloudWebRelayProvider")
-Check-ServiceStatus("RemoteHCLServer")
-Check-ServiceStatus("XaXdCloudProxy")
-
-
+# Checks the expected value for a registry property against the existing
 function RegistryOutput {
     param (
         [Parameter(Mandatory=$true)]
@@ -221,34 +212,82 @@ function RegistryOutput {
         Write-Host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) -ForegroundColor Green
     } else {
         Write-Host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
+
+        $errorlist[$counter] = $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
+        $counter++
     }
 }
 
 
-# Registry values
-
-Write-Host "`n# LHC Status"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\Service\LHC" -Name "Enabled" -ExpectedValue 1 -Title "LHC Enabled"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\Service\LHC" -Name "IsElected" -ExpectedValue 1 -Title "LHC Elected Node"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\Service\LHC" -Name "OutageModeEntered" -ExpectedValue 1 -Title "LHC In Outage Mode"
-
-
-Write-Host "`n# Agent Status"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\CloudServices\Install\AgentSystem" -Name "ProductVersionBase" -ExpectedValue "6.70.0" -Title "Agent Version"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\CloudServices\AgentFoundation" -Name "Configured" -ExpectedValue 1 -Title "Agent Configured"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\CloudServices\AgentFoundation" -Name "ImmediateUpgrade" -ExpectedValue 0 -Title "Agent Upgrade Pending"
-RegistryOutput -Path "HKLM:\Software\Citrix\Broker\CloudServices\AgentFoundation" -Name "InMaintenance" -ExpectedValue 0 -Title "Agent in Maintenance"
-
-
-
-Write-Host "`n# Ping Test"
-if (Test-Connection (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat")) {
-    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat" -ExpectedValue "https://service-us.citrixworkspaceapi.net/" -Title "Connection Status"
-} else {
-    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat" -ExpectedValue "https://service-us.citrixworkspaceapi.net/" -Title "Connection Status"
+# Checks the status of Citrix servics
+function serviceCheck {
+    # Check Service
+    Check-ServiceStatus("cdfCaptureService")
+    Check-ServiceStatus("Citrix Cloud Connector Metrics Service")
+    Check-ServiceStatus("Citrix NetScaler Cloud Gateway")
+    Check-ServiceStatus("CitrixClxMtpService")
+    Check-ServiceStatus("CitrixConfigSyncService")
+    Check-ServiceStatus("CitrixHighAvailabilityService")
+    Check-ServiceStatus("CitrixITSMAdapterProvider")
+    Check-ServiceStatus("CitrixWEMAuthSvc")
+    Check-ServiceStatus("CitrixWemMsgSvc")
+    Check-ServiceStatus("CitrixWorkspaceCloudADProvider")
+    Check-ServiceStatus("CitrixWorkspaceCloudAgentDiscovery")
+    Check-ServiceStatus("CitrixWorkspaceCloudAgentLogger")
+    Check-ServiceStatus("CitrixWorkspaceCloudAgentSystem")
+    Check-ServiceStatus("CitrixWorkspaceCloudAgentWatchdog")
+    Check-ServiceStatus("CitrixWorkspaceCloudCredentialProvider")
+    Check-ServiceStatus("CitrixWorkspaceCloudWebRelayProvider")
+    Check-ServiceStatus("RemoteHCLServer")
+    Check-ServiceStatus("XaXdCloudProxy")
 }
-if (Test-Connection (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat")) {
-    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormatGlobal" -ExpectedValue "https://service.citrixworkspaceapi.net/" -Title "Connection Status Global"
-} else {
-    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormatGlobal" -ExpectedValue "https://service.citrixworkspaceapi.net/" -Title "Connection Status Global"
+
+
+# Gets LHC Information
+function LHCStatus {
+    Write-Host "`n# LHC Status"
+    RegistryOutput -Path "HKLM:\Software\Citrix\Broker\Service\State\LHC" -Name "Enabled" -ExpectedValue 1 -Title "LHC Enabled"
+    RegistryOutput -Path "HKLM:\Software\Citrix\Broker\Service\State\LHC" -Name "IsElected" -ExpectedValue 1 -Title "LHC Elected Node"
+    RegistryOutput -Path "HKLM:\Software\Citrix\Broker\Service\State\LHC" -Name "OutageModeEntered" -ExpectedValue 0 -Title "LHC In Outage Mode"
 }
+
+# Gets Agent information
+function agentStatus {
+    Write-Host "`n# Agent Status"
+    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\Install\AgentSystem" -Name "ProductVersionBase" -ExpectedValue "6.70.0" -Title "Agent Version"
+    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "Configured" -ExpectedValue 1 -Title "Agent Configured"
+    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ImmediateUpgrade" -ExpectedValue 0 -Title "Agent Upgrade Pending"
+    RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "InMaintenance" -ExpectedValue 0 -Title "Agent in Maintenance"
+}
+
+
+# Performs a ping test against the Service Address
+function pingCheck {
+    Write-Host "`n# Ping Test"
+    if (Test-Connection (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat")) {
+        RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat" -ExpectedValue "https://service-us.citrixworkspaceapi.net/" -Title "Connection Status"
+    } else {
+        RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat" -ExpectedValue "https://service-us.citrixworkspaceapi.net/" -Title "Connection Status"
+    }
+    if (Test-Connection (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormat")) {
+        RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormatGlobal" -ExpectedValue "https://service.citrixworkspaceapi.net/" -Title "Connection Status Global"
+    } else {
+        RegistryOutput -Path "HKLM:\Software\Citrix\CloudServices\AgentFoundation" -Name "ServiceAddressFormatGlobal" -ExpectedValue "https://service.citrixworkspaceapi.net/" -Title "Connection Status Global"
+    }
+}
+
+function main {
+    serviceCheck
+    LHCStatus
+    agentStatus
+
+    # Missing DNS entries 
+    #pingCheck()
+
+    Write-Host "`nErrors Found" -ForegroundColor Red
+    foreach ($error in $errorlist) {
+        Write-Host "Error: $error"
+    }
+}
+
+main
