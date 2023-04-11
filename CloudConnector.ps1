@@ -1,3 +1,9 @@
+###
+# This tool is used to gather state information about Citrix Cloud Connectors
+#
+# Updated - 2023-04-11
+# Updated By - MW 
+###
 
 $global:counter = 0
 $global:errorlist = @()
