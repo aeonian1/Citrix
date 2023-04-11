@@ -203,4 +203,28 @@ Check-ServiceStatus("RemoteHCLServer")
 Check-ServiceStatus("XaXdCloudProxy")
 
 
+function RegistryOutput {
+    param (
+        [Parameter(Mandatory=$true)]
+        [String]$Path,
+        [Parameter(Mandatory=$true)]
+        [String]$Name,
+        [Parameter(Mandatory=$true)]
+        [String]$ExpectedValue
+    )
 
+    $LeftSpaced = '{0, -50}' -f $Name + " - "
+
+    Write-Host $Name - Get-ItemPropertyValue -Path $Path -Name $Name
+    if (Get-ItemPropertyValue -Path $Path -Name $Name == $ExpectedValue) {
+        Write-Host $LeftSpaced Get-ItemPropertyValue -Path $Path -Name $Name -ForegroundColor Green
+    } else {
+        Write-Host $LeftSpaced Get-ItemPropertyValue -Path $Path -Name $Name - "Expected Value = " $ExpectedValue -ForegroundColor Red
+    }
+}
+
+
+# Registry values
+
+
+RegistryOutput -Path HKLM:\Software\Citrix\Broker\Service\LHC -Name Enabled -ExpectedValue 1
