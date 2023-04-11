@@ -276,6 +276,13 @@ function pingCheck {
     }
 }
 
+
+function getEvents {
+    $yesterday = (Get-Date) - (New-TimeSpan -Days 1)
+    Write-Host "`nCitrix Application Events - FATAL / ERROR / WARNING"
+    Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday}
+}
+
 function main {
     serviceCheck
     LHCStatus
@@ -291,6 +298,7 @@ function main {
         }
     }
 
+    getEvents
 }
 
 main
