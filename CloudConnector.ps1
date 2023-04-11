@@ -1,6 +1,6 @@
 
-$counter = 0
-$errorlist
+$global:counter = 0
+$global:errorlist = @()
 
 
 # Checks the status of services on Citrix Cloud connectors and provides basic info if they failed
@@ -18,8 +18,8 @@ Function Check-ServiceStatus {
         Write-Host $LeftSpaced $Service.Status -ForegroundColor Red
 
         # Append service name to errorlist
-        $errorlist[$counter] = $ServiceName
-        $counter++
+        $global:errorlist += "Service - " + $ServiceName + " - " + $Service.Status
+        $global:counter++
 
 
         switch ($ServiceName) {
@@ -213,8 +213,8 @@ function RegistryOutput {
     } else {
         Write-Host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
 
-        $errorlist[$counter] = $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
-        $counter++
+        $global:errorlist += write-host $LeftSpaced (Get-ItemPropertyValue -Path $Path -Name $Name) - "Expected Value = " $ExpectedValue -ForegroundColor Red
+        $global:counter++
     }
 }
 
@@ -284,10 +284,13 @@ function main {
     # Missing DNS entries 
     #pingCheck()
 
-    Write-Host "`nErrors Found" -ForegroundColor Red
-    foreach ($error in $errorlist) {
-        Write-Host "Error: $error"
+    if ($global:counter -ne 0) {
+        Write-Host "`nErrors Found" -ForegroundColor Red
+        foreach ($error in $global:errorlist) {
+            Write-Host "Error: $error"
+        }
     }
+
 }
 
 main
