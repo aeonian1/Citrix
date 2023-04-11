@@ -129,7 +129,7 @@ function configReplicationStatus {
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastSourceServer" -ExpectedValue (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastSourceServer") -Title "Last Source Server"
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastStartTime" -ExpectedValue (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastStartTime") -Title "Last Start Time Config Replication"
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastEndTime" -ExpectedValue (Get-ItemPropertyValue -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastEndTime") -Title "Last End Time Config Replication"
-    RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastUpdateStatus" -ExpectedValue "Complete" -Title "Last End Time Config Replication"
+    RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastUpdateStatus" -ExpectedValue "Complete" -Title "Last Update Status"
     RegistryOutput -Path "HKLM:\Software\Citrix\DeliveryServices\ConfigurationReplication\" -Name "LastErrorMessage" -ExpectedValue " " -Title "Last Error Message"
 }
 
