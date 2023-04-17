@@ -223,7 +223,37 @@ function getEvents {
             Write-Host $event | Format-List
         }
     } catch { Write-Host "No Events Found" }
-    
+}
+
+function getFirewallStatus {
+    Write-Host "`n--- Windows Firewall Rule Status ---" -ForegroundColor Yellow
+    Get-NetFirewallRule -Group "Citrix XenDesktop" | 
+    Select-Object DisplayName, PrimaryStatus, Enabled, Direction, Action, 
+        @{Name='Color';Expression={
+            if($_.PrimaryStatus -ne 'OK' -or $_.Enabled -ne $true){
+                'Red'
+            }
+            elseif($_.PrimaryStatus -eq 'OK'){
+                'Green'
+            }
+            else{
+                'Black'
+            }
+        }}
+}
+
+function checkNetworkRequirements {
+    Write-Host "`n--- Network Requirement Check ---" -ForegroundColor Yellow
+    $addresses = @("cloud.com", "citrixworkspaceapi.net", "citrixnetworkapi.net", "servicebus.windows.net", "iwsprodeastusuniconacr.azurecr.io", "iwsprodeastusuniconacr.eastus.data.azurecr.io")
+
+    foreach ($address in $addresses) {
+        $result = Test-NetConnection $address -Port 443
+        if ($result.TcpTestSucceeded) {
+            Write-Host "Connection to $address succeeded" -ForegroundColor Green
+        } else {
+            Write-Host "Connection to $address failed" -ForegroundColor Red
+        }
+    }
 }
 
 # Entry point into this script
@@ -231,6 +261,8 @@ function main {
     serviceCheck
     LHCStatus
     agentStatus
+    getFirewallStatus
+    checkNetworkRequirements
 
     # Missing DNS entries 
     #pingCheck()
