@@ -245,7 +245,7 @@ function GetFirewallStatus {
 
 function checkNetworkRequirements {
     Write-Host "`n--- Network Requirement Check ---" -ForegroundColor Yellow
-    $addresses = @("cloud.com", "citrixworkspaceapi.net", "citrixnetworkapi.net", "iwsprodeastusuniconacr.azurecr.io", "iwsprodeastusuniconacr.eastus.data.azurecr.io")
+    $addresses = @("cloud.com", "iwsprodeastusuniconacr.azurecr.io", "iwsprodeastusuniconacr.eastus.data.azurecr.io")
 
     foreach ($address in $addresses) {
         $result = Test-NetConnection $address -Port 443
