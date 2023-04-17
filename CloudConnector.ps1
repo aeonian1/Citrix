@@ -225,21 +225,22 @@ function getEvents {
     } catch { Write-Host "No Events Found" }
 }
 
-function getFirewallStatus {
+function Get-FirewallStatus {
     Write-Host "`n--- Windows Firewall Rule Status ---" -ForegroundColor Yellow
     Get-NetFirewallRule -Group "Citrix XenDesktop" | 
     Select-Object DisplayName, PrimaryStatus, Enabled, Direction, Action, 
-        @{Name='Color';Expression={
-            if($_.PrimaryStatus -ne 'OK' -or $_.Enabled -ne $true){
-                'Red'
+        @{
+            Name='Color';
+            Expression={
+                if($_.PrimaryStatus -ne 'OK' -or $_.Enabled -ne $true){
+                    'Red'
+                }
+                else{
+                    'Green'
+                }
             }
-            elseif($_.PrimaryStatus -eq 'OK'){
-                'Green'
-            }
-            else{
-                'Black'
-            }
-        }}
+        } | 
+    Format-Table -AutoSize -Property DisplayName, PrimaryStatus, Enabled, Direction, Action -ForegroundColor {$_.Color}
 }
 
 function checkNetworkRequirements {
