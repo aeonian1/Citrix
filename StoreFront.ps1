@@ -154,7 +154,7 @@ function pingCheck {
 function getEvents {
     $yesterday = (Get-Date) - (New-TimeSpan -Days 1)
     Write-Host "`n--- Citrix Application Events - FATAL / ERROR / WARNING ---" -ForegroundColor Yellow
-    try {Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday} | Format-List } catch { Write-Host "No Events Found"}
+    try {Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Citrix*'; Level=1,2,3; StartTime=$yesterday} -ErrorAction Ignore | Format-List } catch { Write-Host "No Events Found"}
 }
 
 # Entry point into this script
