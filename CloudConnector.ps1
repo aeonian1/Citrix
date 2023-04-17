@@ -225,7 +225,7 @@ function getEvents {
     } catch { Write-Host "No Events Found" }
 }
 
-function Get-FirewallStatus {
+function GetFirewallStatus {
     Write-Host "`n--- Windows Firewall Rule Status ---" -ForegroundColor Yellow
     Get-NetFirewallRule -Group "Citrix XenDesktop" | 
     Select-Object DisplayName, PrimaryStatus, Enabled, Direction, Action, 
@@ -240,12 +240,12 @@ function Get-FirewallStatus {
                 }
             }
         } | 
-    Format-Table -AutoSize -Property DisplayName, PrimaryStatus, Enabled, Direction, Action -ForegroundColor {$_.Color}
+    Format-Table -AutoSize -Property DisplayName, PrimaryStatus, Enabled, Direction, Action
 }
 
 function checkNetworkRequirements {
     Write-Host "`n--- Network Requirement Check ---" -ForegroundColor Yellow
-    $addresses = @("cloud.com", "citrixworkspaceapi.net", "citrixnetworkapi.net", "servicebus.windows.net", "iwsprodeastusuniconacr.azurecr.io", "iwsprodeastusuniconacr.eastus.data.azurecr.io")
+    $addresses = @("cloud.com", "citrixworkspaceapi.net", "citrixnetworkapi.net", "iwsprodeastusuniconacr.azurecr.io", "iwsprodeastusuniconacr.eastus.data.azurecr.io")
 
     foreach ($address in $addresses) {
         $result = Test-NetConnection $address -Port 443
