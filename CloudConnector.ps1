@@ -127,6 +127,26 @@ Function Check-ServiceStatus {
     }
 }
 
+function systemInfo {
+    $disk = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object Size,FreeSpace
+    $diskSize = [math]::Round($disk.Size / 1GB)
+    $diskFree = [math]::Round($disk.FreeSpace / 1GB)
+    $diskPercentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100)
+    $cpuCores = (Get-WmiObject -Class Win32_Processor).NumberOfCores
+    $cpuUsage = Get-WmiObject -Class Win32_Processor | Measure-Object -Property LoadPercentage -Average | Select-Object -ExpandProperty Average
+    $memory = Get-WmiObject -Class Win32_ComputerSystem | Select-Object TotalPhysicalMemory
+    $memorySize = [math]::Round($memory.TotalPhysicalMemory / 1GB)
+    $memoryUsage = Get-WmiObject -Class Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize | ForEach-Object {[math]::Round((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory) / $_.TotalVisibleMemorySize) * 100)}
+    $swap = Get-WmiObject -Class Win32_PageFileUsage | Select-Object AllocatedBaseSize,CurrentUsage
+    $swapSize = [math]::Round($swap.AllocatedBaseSize / 1GB)
+    $swapUsage = [math]::Round($swap.CurrentUsage / 1GB)
+
+    Write-Host "DISK                                               -  $diskFree GB / $diskSize GB ($diskPercentFree%)"
+    Write-Host "CPU                                                -  $cpuUsage% ($cpuCores cores)"
+    Write-Host "MEMORY                                             -  $memoryUsage% ($memorySize GB)"
+    Write-Host "SWAP                                               -  $swapUsage GB / $swapSize GB"
+}
+
 # Checks the expected value for a registry property against the existing
 function RegistryOutput {
     param (
@@ -259,6 +279,7 @@ function checkNetworkRequirements {
 
 # Entry point into this script
 function main {
+    systemInfo
     serviceCheck
     LHCStatus
     agentStatus
