@@ -213,7 +213,7 @@ function iisInfo {
     $output.GetEnumerator() | ForEach-Object {
         $var = $_.Key
         $value = $_.Value
-        "$var".PadRight(50) + " - $value"
+        "$var".PadRight(50) + " -   $value"
     }
 }
 
