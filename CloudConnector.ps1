@@ -9,6 +9,14 @@
 $global:counter = 0
 $global:errorlist = @()
 
+function Compare-String($string1, $string2){
+    if($string1 -eq $string2){
+        Write-Host "$string1".PadRight(50) + " -   $string2" -ForegroundColor Green
+    }
+    else{
+        Write-Host "$string1".PadRight(50) + " -   $string2" -ForegroundColor Red
+    }
+}
 
 # Checks the status of services on Citrix Cloud connectors and provides basic info if they failed
 Function Check-ServiceStatus {
@@ -280,6 +288,10 @@ function checkNetworkRequirements {
         }
     }
 }
+
+
+
+
 
 # Entry point into this script
 function main {

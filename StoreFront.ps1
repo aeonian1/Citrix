@@ -14,6 +14,15 @@
 $global:counter = 0
 $global:errorlist = @()
 
+function Compare-String($string1, $string2){
+    if($string1 -eq $string2){
+        Write-Host "$string1".PadRight(50) + " -   $string2" -ForegroundColor Green
+    }
+    else{
+        Write-Host "$string1".PadRight(50) + " -   $string2" -ForegroundColor Red
+    }
+}
+
 
 # Checks the status of services on Citrix Cloud connectors and provides basic info if they failed
 Function Check-ServiceStatus {
@@ -218,12 +227,31 @@ function iisInfo {
 }
 
 
+function getInfo {
+    Write-Host "`n--- StoreFront Get Commands ---" -ForegroundColor Yellow
+
+    Compare-String(Get-STFDeployment | Select-Object -Property "Hostbaseurl", "https://storefront./") 
+    Compare-String(Get-STFServerGroup | Select-Object -Property "ClusterMembers", "{,,,}")
+    Get-STFVersion 
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "Name", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "Logon", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "CallbackUrl", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "Location", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "SessionReliability", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "RequestTicketTwoStas", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "StasUseLoadBalancing", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "StasBypassDuration", "")
+    Compare-String(Get-STFRoamingGateway | Select-Object -Property "SecureTicketAuthorityUrls", "")
+    Get-STFStoreService | Select-Object -Property Name, ConfigurationFile
+}
+
 # Entry point into this script
 function main {
     systemInfo
     serviceCheck
     configReplicationStatus
-    iisInfo
+    # iisInfo
+    getInfo
 
 
     # Missing DNS entries 
