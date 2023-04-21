@@ -295,6 +295,8 @@ function checkNetworkRequirements {
 
 # Entry point into this script
 function main {
+    asnp Citrix*
+
     systemInfo
     serviceCheck
     LHCStatus
