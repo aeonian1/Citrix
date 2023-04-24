@@ -42,7 +42,7 @@ function serviceCheck {
 
 
 # Entry point into this script
-function main {
+function StoreFrontMain {
     systemInfo
     serviceCheck
     configReplicationStatus
@@ -62,5 +62,3 @@ function main {
 
     getEvents
 }
-
-main

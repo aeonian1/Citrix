@@ -44,7 +44,7 @@ function serviceCheck {
 
 
 # Entry point into this script
-function main {
+function CloudConnectorMain {
     asnp Citrix*
 
     systemInfo
@@ -66,5 +66,3 @@ function main {
 
     getEvents
 }
-
-main
