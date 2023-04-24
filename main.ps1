@@ -4,12 +4,15 @@ Import-Module PSScriptRoot\StoreFront.ps1
 # Import the object from the file
 $dataObject = Import-Clixml -Path ".\Data\dataObject.xml"
 
-# Loop through each computer in the array and run a command
+#### Check Starts
+
+# Cloud Connector
 foreach ($computer in $dataObject.cloudconnector) {
-    Invoke-Command -ComputerName $computer -ScriptBlock { CloudConnectorMain }
+    Invoke-Command -ComputerName $computer -ScriptBlock { CloudConnectorMain } -ArgumentList $dataObject.cloudconnector
 }
 
+# StoreFront
 foreach ($computer in $dataObject.storefront) {
-    Invoke-Command -ComputerName $computer -ScriptBlock { StoreFrontMain }
+    Invoke-Command -ComputerName $computer -ScriptBlock { StoreFrontMain } -ArgumentList $dataObject.storefront
 }
 
