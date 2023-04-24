@@ -7,17 +7,17 @@
 ###
 
 # Base
-Import-Module $PSScriptRoot\Modules\Mod_Firewall.psm1
-Import-Module $PSScriptRoot\Modules\Mod_Networking.psm1
-Import-Module $PSScriptRoot\Modules\Mod_Registry.psm1
-Import-Module $PSScriptRoot\Modules\Mod_Services.psm1
-Import-Module $PSScriptRoot\Modules\Mod_StringStdout.psm1
-Import-Module $PSScriptRoot\Modules\Mod_SystemInfo.psm1
-Import-Module $PSScriptRoot\Modules\Mod_WindowsEvent.psm1
+Import-Module "Modules\Mod_Firewall.psm1"
+Import-Module "Modules\Mod_Networking.psm1"
+Import-Module "Modules\Mod_Registry.psm1"
+Import-Module "Modules\Mod_Services.psm1"
+Import-Module "Modules\Mod_StringStdout.psm1"
+Import-Module "Modules\Mod_SystemInfo.psm1"
+Import-Module "Modules\Mod_WindowsEvent.psm1"
 
 # StoreFront Specific
-Import-Module $PSScriptRoot\Modules\Mod_IIS.psm1
-Import-Module $PSScriptRoot\Modules\Mod_StoreFront.psm1
+Import-Module "Modules\Mod_IIS.psm1"
+Import-Module "Modules\Mod_StoreFront.psm1"
 
 $global:counter = 0
 $global:errorlist = @()

@@ -1,5 +1,5 @@
-Import-Module PSScriptRoot\CloudConnector.ps1
-Import-Module PSScriptRoot\StoreFront.ps1
+Import-Module "CloudConnector.ps1"
+Import-Module "StoreFront.ps1"
 
 # Import the object from the file
 $dataObject = Import-Clixml -Path ".\Data\dataObject.xml"
