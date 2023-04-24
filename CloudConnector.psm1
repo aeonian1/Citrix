@@ -13,7 +13,7 @@ Import-Module ".\Modules\Mod_Registry.psm1"
 Import-Module ".\Modules\Mod_Services.psm1"
 Import-Module ".\Modules\Mod_StringStdout.psm1"
 Import-Module ".\Modules\Mod_SystemInfo.psm1"
-Import-Module ".\Modules\Mod_WindowsEvent.psm1"
+Import-Module ".\Modules\Mod_WindowsEvents.psm1"
 
 
 $global:counter = 0
