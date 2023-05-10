@@ -46,5 +46,8 @@ $response | ConvertFrom-Json | ForEach-Object {
   }
 }
 
+# Get the current date as a string
+$dateString = Get-Date -Format "yyyyMMdd"
+
 # Export the data to a CSV file, enforcing column order
-$adminDataArray | Select-Object DisplayName, Enabled, Roles | Export-Csv -Path "prod_administrator_audit.csv" -NoTypeInformation
+$adminDataArray | Select-Object DisplayName, Enabled, Roles | Export-Csv -Path "$dateString-citrixAdminRoles.csv" -NoTypeInformation
