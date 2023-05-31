@@ -9,7 +9,7 @@ function getTitle {
         [Parameter(Mandatory=$true)] [string] $title
     )
 
-    Write-Host "--- $title ---"
+    Write-Host "`n--- $title ---"
 }
 
 # Report the number of faults detected
@@ -21,7 +21,7 @@ function getFaults {
     if ($faults.Count -eq 0) {
         Write-Host "No issues detected"
     } else {
-        foreach ($fault in $faults) {
+        foreach ($fault in $faults.Value) {
             Write-Host $fault
         }
     }
@@ -36,7 +36,7 @@ function compareValues {
     )
 
     if ($str1 -eq $str2) {
-        Write-Host "$str1" -ForegroundColor Green
+        Write-Host "Version".PadRight(50) $str1 -ForegroundColor Green
     } else {
         Write-Host "$str1 - The correct value is $str2" -ForegroundColor Red
         $faults.Value += "$str1 - The correct value is $str2"
@@ -51,10 +51,10 @@ function checkService {
     )
 
     if ((Get-Service -Name $service).Status -eq "Running") {
-        Write-Host "$service is Running" -ForegroundColor Green
+        Write-Host "$service".PadRight(50) "Running" -ForegroundColor Green
     } else {
-        Write-Host "$service is not online" -ForegroundColor Red
-        $faults.Value += "$service is not online"
+        Write-Host "$service".PadRight(50) "Not Running" -ForegroundColor Red
+        $faults.Value += "$service is not running"
     }
 }
 
@@ -66,9 +66,9 @@ function checkFirewallRule {
     )
 
     if ((Get-NetFirewallRule -DisplayName $fwrule).Enabled -eq "True") {
-        Write-Host "$fwrule is Enabled" -ForegroundColor Green
+        Write-Host "$fwrule".PadRight(50) "Enabled" -ForegroundColor Green
     } else {
-        Write-Host "$fwrule is not enabled" -ForegroundColor Red
+        Write-Host "$fwrule".PadRight(50) "Not Enabled" -ForegroundColor Red
         $faults.Value += "$fwrule is not enabled"
     }
 }
@@ -81,20 +81,20 @@ function checkPortOpen {
     )
 
     if ((Test-NetConnection 127.0.0.1 -Port $port).TcpTestSucceeded -eq "True") {
-        Write-Host "$port is open" -ForegroundColor Green
+        Write-Host "$port".PadRight(50) "Open" -ForegroundColor Green
     } else {
-        Write-Host "$port is not open" -ForegroundColor Red
+        Write-Host "$port".PadRight(50) "Not Open" -ForegroundColor Red
         $faults.Value += "$port is not open"
     }
 }
 
 # Gets the host ID
 function getHostID {
-    $output = "C:\Program Files (x86)\Citrix\Licensing\ls\lmhostid.exe"
+    $output = & "C:\Program Files (x86)\Citrix\Licensing\ls\lmhostid.exe"
     if ($output -match '"(.*)"') {
         $hostid = $Matches[0]
         $hostid = $hostid.Replace('"', '')
-        Write-Host "The Host ID - $hostid"
+        Write-Host "Host ID".PadRight(50) $hostid
     }
 }
 
