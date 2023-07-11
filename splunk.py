@@ -22,7 +22,7 @@ token = response.json()
 session = requests.Session()
 session.headers.update({
   'Authorization': f'CwsAuth Bearer={token["access_token"]}',
-  'Citrix-CustomerId': '625eza6aj2xr',
+  'Citrix-CustomerId': '',
   'Accept': 'application/json'
 })
 
